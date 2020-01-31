@@ -35,6 +35,7 @@ def main(args):
         vis = np.concatenate((image, blank), axis=1)
         while True:
             display(points, vis)
+            break
 
     cv2.destroyAllWindows()
 

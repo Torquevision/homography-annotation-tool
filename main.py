@@ -20,10 +20,15 @@ def get_points():
 def euc_dist(p1, p2):
     return math.sqrt((p1[0] - p2[0])**2  + (p1[1] - p2[1])**2)
 
-def update_view(p1, p2, img):
+def update_view(p1, p2, img, count):
     img = cv2.circle(img, tuple(p1), 10, (255, 0, 0), 3)
     img = cv2.circle(img, tuple(p2), 10, (0, 0, 255), 3)
     img = cv2.line(img, tuple(p1), tuple(p2), (0, 255, 0), 3)
+    minx = min(p1[0] , p2[0])
+    miny = min(p1[1], p2[1])
+    cx = minx + abs(p1[0]-p2[0])//2
+    cy = miny + abs(p1[1]-p2[1])//2
+    img = cv2.putText(img, str(count), (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA) 
     cv2.imshow('Image', img)
 
     return img
@@ -58,8 +63,10 @@ def mouse_handler(event, x, y, flags, data):
 def update_all_view(global_points):
     global image
     img = image.copy()
+    cnt = 1
     for i in range(0, len(global_points), 2):
-        img = update_view(global_points[i], global_points[i+1], img)
+        img = update_view(global_points[i], global_points[i+1], img, cnt)
+        cnt += 1
 
 def add_data(key, val, imsize, file_name = 'output.json'):
     if len(val) == 0:
