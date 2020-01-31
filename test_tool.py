@@ -4,11 +4,12 @@ import cv2
 import argparse
 import random
 import math
+import json
 
 def update_view(p1, p2, img):
-    img = cv2.circle(img, p1, 10, (255, 0, 0), 3)
-    img = cv2.circle(img, p2, 10, (0, 0, 255), 3)
-    img = cv2.line(img, p1, p2, (0, 255, 0), 3)
+    img = cv2.circle(img, tuple(p1), 10, (255, 0, 0), 3)
+    img = cv2.circle(img, tuple(p2), 10, (0, 0, 255), 3)
+    img = cv2.line(img, tuple(p1), tuple(p2), (0, 255, 0), 3)
     
     return img
 
@@ -25,17 +26,15 @@ def main(args):
     if not os.path.exists(args.data_path):
         print(args.data_path, ' -- Path not exists')
     #cv2.imshow('rink', rink_img)
-    points = [(556, 216), (1740, 83), (375, 540), (1613, 216)]
-    for file in os.listdir(args.data_path):
-        print(file)
-        full_path =os.path.join(args.data_path, file)
-        image = cv2.imread(full_path)
+    json_path = os.path.join(args.data_path, 'output.json')
+    data = json.load(open(json_path))
+    for file in data:
+        file_path = os.path.join(args.data_path, file)
+        image = cv2.imread(file_path)
         blank = np.zeros(image.shape, np.uint8)
         blank[0:rink_img.shape[0], 0: rink_img.shape[1]] = rink_img
         vis = np.concatenate((image, blank), axis=1)
-        while True:
-            display(points, vis)
-            break
+        display(data[file]['points'], vis)
 
     cv2.destroyAllWindows()
 

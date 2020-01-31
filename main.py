@@ -13,8 +13,8 @@ global_item = None
 image = None
 
 def get_points():
-    x,y = random.randint(50, 200), random.randint(50, 200)
-    xx,yy = random.randint(250, 450), random.randint(250, 450)
+    x,y = random.randint(50, 100), random.randint(50, 100)
+    xx,yy = random.randint(150, 250), random.randint(150, 250)
     return [(x, y), (xx, yy)]
 
 def euc_dist(p1, p2):
@@ -109,6 +109,13 @@ def main(args):
         blank = np.zeros(img.shape, np.uint8)
         blank[0:rink_img.shape[0], 0: rink_img.shape[1]] = rink_img
         vis = np.concatenate((img, blank), axis=1)
+        y_ = vis.shape[0]
+        x_ = vis.shape[1]
+        targetSizeX, targetSizeY = x_//2, y_//2
+        print(targetSizeX, targetSizeY)
+        x_scale = x_ / targetSizeX 
+        y_scale = y_ / targetSizeY
+        vis = cv2.resize(vis, (targetSizeX, targetSizeY))
         image = vis.copy()
         global_points = read_data(file, file_name = output_path)
         cv2.imshow('Image', image)
@@ -126,7 +133,11 @@ def main(args):
             elif key ==  ord('f'):
                 fuck_this_loop = True
                 break
-        add_data(file, global_points, img.shape, file_name = output_path)
+        print(x_scale, y_scale)
+        new_points = [(int(np.round(x * x_scale)), int(np.round(y * y_scale))) for x,y in global_points]
+        print(global_points)
+        print(new_points)
+        add_data(file, new_points, img.shape, file_name = output_path)
         if fuck_this_loop:
             break
     cv2.destroyAllWindows()

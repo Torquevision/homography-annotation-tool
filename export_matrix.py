@@ -18,14 +18,16 @@ def main(args):
         
         src_points = np.array(src_points)
         dest_points = np.array(dest_points)
-        h, status = cv2.findHomography(src_points, dest_points)
+        h = None
+        if len(src_points) >= 4:
+            h, status = cv2.findHomography(src_points, dest_points)
 
         if h is not None:
             s = ' '.join([file] + [str(k) for k in h.reshape(9).tolist()][:-1])
             #print(s)
             w.write(s + '\n')
         else:
-            print('--> Skipping ', file)
+            print('--> Skipping ', file, h)
     w.close()
     print('output saved at', os.path.join(args.data_path, 'annotations.txt'))
 
