@@ -13,18 +13,22 @@ def main(args):
         file_path = os.path.join(args.data_path, file)
         src_points, dest_points = [], []
         for i in range(0, len(data[file]['points']), 2):
+            height, width = data[file]['height'], data[file]['width']
             src_points.append(data[file]['points'][i])
-            dest_points.append(data[file]['points'][i+1])
+            x_, y_ = data[file]['points'][i+1]
+            # for horizontal stacking
+            dest_points.append([x_ - width, y_])
         
         src_points = np.array(src_points)
         dest_points = np.array(dest_points)
+        #print(src_points, dest_points)
         h = None
         if len(src_points) >= 4:
             h, status = cv2.findHomography(src_points, dest_points)
 
         if h is not None:
             s = ' '.join([file] + [str(k) for k in h.reshape(9).tolist()][:-1])
-            #print(s)
+            print(s)
             w.write(s + '\n')
         else:
             print('--> Skipping ', file, h)

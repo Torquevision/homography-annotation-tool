@@ -112,12 +112,12 @@ def main(args):
         y_ = vis.shape[0]
         x_ = vis.shape[1]
         targetSizeX, targetSizeY = x_//2, y_//2
-        print(targetSizeX, targetSizeY)
         x_scale = x_ / targetSizeX 
         y_scale = y_ / targetSizeY
         vis = cv2.resize(vis, (targetSizeX, targetSizeY))
         image = vis.copy()
-        global_points = read_data(file, file_name = output_path)
+        pts = read_data(file, file_name = output_path)
+        global_points = [[int(np.round(x / x_scale)), int(np.round(y / y_scale))] for x, y in pts]
         cv2.imshow('Image', image)
         update_all_view(global_points)
         fuck_this_loop = False
@@ -133,10 +133,7 @@ def main(args):
             elif key ==  ord('f'):
                 fuck_this_loop = True
                 break
-        print(x_scale, y_scale)
         new_points = [(int(np.round(x * x_scale)), int(np.round(y * y_scale))) for x,y in global_points]
-        print(global_points)
-        print(new_points)
         add_data(file, new_points, img.shape, file_name = output_path)
         if fuck_this_loop:
             break
